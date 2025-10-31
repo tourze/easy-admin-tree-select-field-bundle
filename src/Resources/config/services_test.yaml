@@ -1,0 +1,15 @@
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    public: true
+
+  # DataFixtures 服务 - 用于测试环境的测试数据
+  Tourze\EasyAdminTreeSelectFieldBundle\DataFixtures\TestTreeEntityFixtures:
+    tags:
+      - { name: doctrine.fixture.orm }
+
+  Tourze\EasyAdminTreeSelectFieldBundle\DataFixtures\TreeSelectDemoFixtures:
+    tags:
+      - { name: doctrine.fixture.orm }

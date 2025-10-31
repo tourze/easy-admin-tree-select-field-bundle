@@ -1,0 +1,28 @@
+{# templates/bundles/EasyAdminBundle/crud/field/tree_select.html.twig #}
+<div class="field-tree-select">
+    {% if ea.crud.currentAction == 'detail' %}
+        {% if field.value is empty %}
+            <span class="badge badge-secondary">未选择</span>
+        {% else %}
+            <div class="selected-items">
+                {% if field.value is iterable %}
+                    {% for item in field.value %}
+                        <span class="badge badge-primary me-1 mb-1">{{ item.label ?? item }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="badge badge-primary">{{ field.value.label ?? field.value }}</span>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        {% if field.value is empty %}
+            <span class="text-muted">—</span>
+        {% else %}
+            {% if field.value is iterable %}
+                <span class="badge badge-info">{{ field.value|length }} 项</span>
+            {% else %}
+                <span class="badge badge-primary">{{ field.value.label ?? field.value }}</span>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>

@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Tourze\EasyAdminTreeSelectFieldBundle\Form\Type\TreeSelectType:
+        tags:
+            - { name: form.type }
+
+    Tourze\EasyAdminTreeSelectFieldBundle\DataProvider\ArrayTreeDataProvider: ~
+    Tourze\EasyAdminTreeSelectFieldBundle\DataProvider\EntityTreeDataProvider: ~
+
+    # Repository 服务
+    Tourze\EasyAdminTreeSelectFieldBundle\Repository\TestTreeEntityRepository: ~
+    Tourze\EasyAdminTreeSelectFieldBundle\Repository\TestTreeEntityRepositoryTest: ~

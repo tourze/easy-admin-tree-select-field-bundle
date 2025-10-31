@@ -1,0 +1,259 @@
+{# templates/form/tree_select_theme.html.twig #}
+
+{%- block tree_select_widget -%}
+    <div class="tree-select-widget" 
+         data-tree-select="{{ multiple ? 'multiple' : 'single' }}"
+         data-searchable="{{ searchable ? 'true' : 'false' }}"
+         data-sortable="{{ sortable ? 'true' : 'false' }}"
+         data-lazy-load="{{ lazy_load ? 'true' : 'false' }}">
+        
+        {# 隐藏的原始字段 #}
+        <div style="display: none;">
+            {% if multiple %}
+                <select multiple name="{{ full_name }}" style="display: none;">
+                    {# 首先渲染当前可用的选项 #}
+                    {% for choice_value, choice_label in choices %}
+                        {% set is_selected = false %}
+                        {% if value is iterable %}
+                            {% for selected_id in value %}
+                                {% set choice_value_str = choice_value|ea_as_string %}
+                                {% set selected_id_str = selected_id|ea_as_string %}
+                                {% if selected_id_str == choice_value_str %}
+                                    {% set is_selected = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <option value="{{ choice_value }}" {% if is_selected %}selected{% endif %}>
+                            {{ choice_label }}
+                        </option>
+                    {% endfor %}
+                    
+                    {# 然后为历史数据（不在当前choices中的选中项）创建选项 #}
+                    {% if value is iterable and entity_data is iterable %}
+                        {% for selected_id in value %}
+                            {% set selected_id_str = selected_id|ea_as_string %}
+                            
+                            {# 检查这个选中项是否已经在choices中 #}
+                            {% set found_in_choices = false %}
+                            {% for choice_value, choice_label in choices %}
+                                {% set choice_value_str = choice_value|ea_as_string %}
+                                {% if selected_id_str == choice_value_str %}
+                                    {% set found_in_choices = true %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {# 如果不在choices中，则作为历史数据添加 #}
+                            {% if not found_in_choices %}
+                                {# 从entity_data中找到对应的实体对象获取名称 #}
+                                {% set item_label = selected_id %}
+                                {% for entity in entity_data %}
+                                    {% set entity_id_str = entity.getId()|ea_as_string %}
+                                    {% if entity_id_str == selected_id_str %}
+                                        {% set item_label = entity|ea_as_string %}
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                <option value="{{ selected_id }}" selected data-historical="true">
+                                    {{ item_label }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            {% else %}
+                <select name="{{ full_name }}" style="display: none;">
+                    <option value="">请选择...</option>
+                    {% for choice_value, choice_label in choices %}
+                        {% set selected_id = value %}
+                        {% set choice_value_str = choice_value|ea_as_string %}
+                        {% set selected_id_str = selected_id|ea_as_string %}
+                        <option value="{{ choice_value }}" 
+                                {% if selected_id_str == choice_value_str %}selected{% endif %}>
+                            {{ choice_label }}
+                        </option>
+                    {% endfor %}
+                    
+                    {# 单选时也需要处理历史数据 #}
+                    {% if value is not empty and entity_data is not empty %}
+                        {% set selected_id = value %}
+                        {% set selected_id_str = selected_id|ea_as_string %}
+                        
+                        {# 检查选中值是否在choices中 #}
+                        {% set found_in_choices = false %}
+                        {% for choice_value, choice_label in choices %}
+                            {% set choice_value_str = choice_value|ea_as_string %}
+                            {% if selected_id_str == choice_value_str %}
+                                {% set found_in_choices = true %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {# 如果不在choices中，则作为历史数据添加 #}
+                        {% if not found_in_choices %}
+                            {# 从entity_data获取分类名称 #}
+                            {% set selected_label = entity_data|ea_as_string %}
+                            
+                            <option value="{{ selected_id }}" selected data-historical="true">
+                                {{ selected_label }}
+                            </option>
+                        {% endif %}
+                    {% endif %}
+                </select>
+            {% endif %}
+        </div>
+        
+        {# 触发器 - 点击显示下拉框 #}
+        <div class="tree-select-trigger form-control" data-tree-trigger tabindex="0">
+            <div class="trigger-content">
+                {% if multiple %}
+                    <div class="selected-tags" data-selected-display>
+                        {# 多选已选项标签 #}
+                    </div>
+                    <div class="placeholder" {% if value is not empty %}style="display: none;"{% endif %}>
+                        {{ placeholder ?? '请选择分类' }}
+                    </div>
+                {% else %}
+                    <div class="single-value" data-single-display>
+                        {# 单选已选项 #}
+                    </div>
+                    <div class="placeholder" {% if value is not empty %}style="display: none;"{% endif %}>
+                        {{ placeholder ?? '请选择分类' }}
+                    </div>
+                {% endif %}
+                <div class="trigger-arrow">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+        
+        {# 下拉层遮罩 #}
+        <div class="tree-dropdown-overlay" data-dropdown-overlay style="display: none;"></div>
+        
+        {# 下拉弹层 #}
+        <div class="tree-dropdown" data-tree-dropdown style="display: none;">
+            {# 搜索框 #}
+            {% if searchable %}
+                <div class="tree-search-box">
+                    <input type="text" 
+                           class="form-control form-control-sm" 
+                           placeholder="搜索分类..." 
+                           data-tree-search>
+                </div>
+            {% endif %}
+            
+            {# 操作按钮 #}
+            <div class="tree-actions">
+                {% if multiple %}
+                    <button type="button" class="btn btn-link btn-sm p-0" data-clear-all>
+                        <i class="fas fa-times-circle"></i> 清空选择
+                    </button>
+                {% endif %}
+                {% if expand_all %}
+                    <div class="ms-auto">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-expand-all>
+                            <i class="fa fa-plus-square"></i> 全部展开
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm ms-1" data-collapse-all>
+                            <i class="fa fa-minus-square"></i> 全部收起
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+            
+            {# 树状结构 #}
+            <div class="tree-container">
+                <div class="tree-content" data-tree-data="{{ tree_data|json_encode }}">
+                    {{ _self.render_tree_nodes(tree_data, multiple, value, node_icon, leaf_icon, show_checkbox) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endblock -%}
+
+{# 递归渲染树节点 #}
+{% macro render_tree_nodes(nodes, multiple, selected_value, node_icon, leaf_icon, show_checkbox) %}
+    {% if nodes is not empty %}
+        <ul class="tree-list">
+            {% for node in nodes %}
+                <li class="tree-node" 
+                    data-node-id="{{ node.id }}" 
+                    data-node-level="{{ node.level }}"
+                    data-selectable="{{ node.selectable ? 'true' : 'false' }}">
+                    <div class="tree-node-content">
+                        {# 展开/收起按钮 #}
+                        {% if node.children is not empty %}
+                            <button type="button" class="tree-toggle btn btn-sm p-0" data-toggle="collapse">
+                                <i class="fas fa-chevron-right tree-toggle-icon"></i>
+                            </button>
+                        {% else %}
+                            <span class="tree-spacer"></span>
+                        {% endif %}
+                        
+                        {# 节点图标 #}
+                        {% if node_icon or leaf_icon %}
+                            <span class="tree-node-icon">
+                                {% if node.is_leaf and leaf_icon %}
+                                    <i class="{{ leaf_icon }}"></i>
+                                {% elseif node_icon %}
+                                    <i class="{{ node_icon }}"></i>
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                        
+                        {# 复选框或单选框 #}
+                        {% if show_checkbox and node.selectable %}
+                            {% set is_selected = false %}
+                            {% if multiple %}
+                                {% if selected_value is iterable %}
+                                    {% for selected_id in selected_value %}
+                                        {# selected_value现在是ID数组 #}
+                                        {% set node_id_str = node.id|ea_as_string %}
+                                        {% set selected_id_str = selected_id|ea_as_string %}
+                                        {% if selected_id_str == node_id_str %}
+                                            {% set is_selected = true %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <input type="checkbox" 
+                                       class="tree-checkbox me-2" 
+                                       data-node-id="{{ node.id }}"
+                                       data-node-label="{{ node.label }}"
+                                       {% if is_selected %}checked{% endif %}>
+                            {% else %}
+                                {# 单选模式：selected_value是ID值或null #}
+                                {% set selected_id = selected_value %}
+                                {% set node_id_str = node.id|ea_as_string %}
+                                {% set selected_id_str = selected_id|ea_as_string %}
+                                {% set is_selected = selected_id_str == node_id_str %}
+                                <input type="radio" 
+                                       name="tree-radio-{{ node.id }}"
+                                       class="tree-radio me-2" 
+                                       data-node-id="{{ node.id }}"
+                                       data-node-label="{{ node.label }}"
+                                       {% if is_selected %}checked{% endif %}>
+                            {% endif %}
+                        {% endif %}
+                        
+                        {# 节点标签 #}
+                        <label class="tree-label">
+                            {{ node.label }}
+                            {% if node.metadata.badge is defined %}
+                                <span class="badge badge-secondary ms-1">{{ node.metadata.badge }}</span>
+                            {% endif %}
+                        </label>
+                    </div>
+                    
+                    {# 子节点 #}
+                    {% if node.children is not empty %}
+                        <div class="tree-children {{ node.expanded ? 'show' : 'collapse' }}">
+                            {{ _self.render_tree_nodes(node.children, multiple, selected_value, node_icon, leaf_icon, show_checkbox) }}
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="text-muted text-center py-3">
+            <i class="fa fa-tree"></i> 暂无数据
+        </div>
+    {% endif %}
+{% endmacro %}
