@@ -22,7 +22,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
      */
     protected static function base(string $propertyName, ?string $label = null): static
     {
-        /** @phpstan-ignore-next-line */
         $self = new static();
 
         // 这些方法来自FieldTrait，仍然支持链式调用
@@ -42,7 +41,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
 
     /**
      * 设置数据提供者。
-     * @phpstan-ignore-next-line symplify.noReturnSetterMethod
      */
     public function setDataProvider(TreeDataProviderInterface $provider): static
     {
@@ -53,7 +51,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
 
     /**
      * 设置实体类（用于多选时的 Collection 转换器等）。
-     * @phpstan-ignore-next-line symplify.noReturnSetterMethod
      */
     public function setEntityClass(string $entityClass): static
     {
@@ -64,8 +61,8 @@ abstract class AbstractTreeSelectField implements FieldInterface
 
     /**
      * 从数组设置数据。
+     *
      * @param array<array<string,mixed>> $data
-     * @phpstan-ignore-next-line symplify.noReturnSetterMethod
      */
     public function setData(array $data): static
     {
@@ -75,7 +72,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setMultiple(bool $multiple = true): static
     {
         $this->setFormTypeOption('multiple', $multiple);
@@ -83,7 +79,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setExpandAll(bool $expandAll = false): static
     {
         $this->setFormTypeOption('expand_all', $expandAll);
@@ -91,7 +86,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setExpandedLevel(?int $level = 1): static
     {
         $this->setFormTypeOption('expanded_level', $level);
@@ -99,7 +93,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setSearchable(bool $searchable = true): static
     {
         $this->setFormTypeOption('searchable', $searchable);
@@ -107,7 +100,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setMaxDepth(?int $maxDepth = null): static
     {
         $this->setFormTypeOption('max_depth', $maxDepth);
@@ -115,7 +107,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setPlaceholder(?string $placeholder = null): static
     {
         $this->setFormTypeOption('placeholder', $placeholder);
@@ -123,7 +114,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setRequired(bool $required = false): static
     {
         $this->setFormTypeOption('required', $required);
@@ -131,7 +121,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setSortable(bool $sortable = false): static
     {
         $this->setFormTypeOption('sortable', $sortable);
@@ -139,7 +128,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setShowCheckbox(bool $showCheckbox = true): static
     {
         $this->setFormTypeOption('show_checkbox', $showCheckbox);
@@ -147,7 +135,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setLazyLoad(bool $lazyLoad = false): static
     {
         $this->setFormTypeOption('lazy_load', $lazyLoad);
@@ -155,7 +142,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setNodeIcon(?string $icon = null): static
     {
         $this->setFormTypeOption('node_icon', $icon);
@@ -163,7 +149,6 @@ abstract class AbstractTreeSelectField implements FieldInterface
         return $this;
     }
 
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setLeafIcon(?string $icon = null): static
     {
         $this->setFormTypeOption('leaf_icon', $icon);
