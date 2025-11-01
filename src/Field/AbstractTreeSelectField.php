@@ -22,6 +22,7 @@ abstract class AbstractTreeSelectField implements FieldInterface
      */
     protected static function base(string $propertyName, ?string $label = null): static
     {
+        /** @phpstan-ignore-next-line */
         $self = new static();
 
         // 这些方法来自FieldTrait，仍然支持链式调用
