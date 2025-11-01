@@ -18,7 +18,6 @@ final class TreeSelectMultiField extends AbstractTreeSelectField
     }
 
     // 固化多选语义，避免被外部改为单选
-    /** @phpstan-ignore-next-line symplify.noReturnSetterMethod */
     public function setMultiple(bool $multiple = true): static
     {
         parent::setMultiple(true);
