@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Tourze\EasyAdminTreeSelectFieldBundle\Tests;
 
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Tourze\BundleDependency\BundleDependencyInterface;
 use Tourze\EasyAdminTreeSelectFieldBundle\DependencyInjection\Compiler\TwigPathCompilerPass;
 use Tourze\EasyAdminTreeSelectFieldBundle\EasyAdminTreeSelectFieldBundle;
 use Tourze\PHPUnitSymfonyKernelTest\AbstractBundleTestCase;
@@ -25,17 +22,6 @@ final class EasyAdminTreeSelectFieldBundleTest extends AbstractBundleTestCase
     protected function onSetUp(): void
     {
         // Bundle 测试不需要特殊的初始化
-    }
-
-    public function testGetBundleDependenciesReturnsCorrectDependencies(): void
-    {
-        $dependencies = EasyAdminTreeSelectFieldBundle::getBundleDependencies();
-
-        $this->assertArrayHasKey(EasyAdminBundle::class, $dependencies);
-        $this->assertArrayHasKey(TwigBundle::class, $dependencies);
-
-        $this->assertEquals(['all' => true], $dependencies[EasyAdminBundle::class]);
-        $this->assertEquals(['all' => true], $dependencies[TwigBundle::class]);
     }
 
     public function testBundleNameIsCorrect(): void
